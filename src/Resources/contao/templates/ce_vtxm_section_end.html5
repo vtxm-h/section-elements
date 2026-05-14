@@ -1,0 +1,8 @@
+<?php if ('split' === $this->sectionType): ?>
+    </div>
+  </div>
+</section>
+<?php elseif ('grid' === $this->sectionType): ?>
+  </div>
+</section>
+<?php endif; ?>

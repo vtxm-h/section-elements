@@ -1,0 +1,19 @@
+{
+    "name": "vtxm-h/section-elements",
+    "type": "contao-bundle",
+    "description": "Inline structural section content elements for Contao 4.13 articles.",
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "contao/core-bundle": "^4.13",
+        "contao/manager-plugin": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vendor\\SectionElementsBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Vendor\\SectionElementsBundle\\ContaoManager\\Plugin"
+    }
+}
