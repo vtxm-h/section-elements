@@ -23,13 +23,13 @@ $GLOBALS['TL_LANG']['tl_content']['split_legend'] = 'Split settings';
 
 $GLOBALS['TL_LANG']['tl_content']['sectionType'] = ['Section type', 'Choose whether the section is rendered as a grid or split layout.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionPreset'] = ['Preset', 'Choose an optional preset class for project-specific styling.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionColumns'] = ['Columns', 'Number of grid columns. Used for the grid section type.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionGap'] = ['Gap', 'Grid gap between elements. Used for the grid section type.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionGridAlign'] = ['Grid alignment', 'Alignment of grid elements. Used for the grid section type.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionRatio'] = ['Split ratio', 'Width ratio of the split areas. Used for the split section type.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionAlign'] = ['Split alignment', 'Vertical alignment of split areas. Used for the split section type.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionDivider'] = ['Show divider', 'Adds the has-divider class. Used for the split section type.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionStackMobile'] = ['Stack on mobile', 'Adds the is-stack-mobile class.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionColumns'] = ['Columns', 'Number of grid columns.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionGap'] = ['Gap', 'Spacing between grid elements.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionGridAlign'] = ['Grid alignment', 'Alignment of grid elements.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionRatio'] = ['Split ratio', 'Width ratio of the split areas.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionAlign'] = ['Split alignment', 'Vertical alignment of split areas.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionDivider'] = ['Show divider', 'Shows a divider line between the split areas.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionStackMobile'] = ['Stack on mobile', 'Stacks the areas below each other on smaller screens.'];
 
 $GLOBALS['TL_LANG']['tl_content']['sectionTypeOptions'] = [
     'grid' => 'Grid',

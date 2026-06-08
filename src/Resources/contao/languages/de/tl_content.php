@@ -23,13 +23,13 @@ $GLOBALS['TL_LANG']['tl_content']['split_legend'] = 'Split-Einstellungen';
 
 $GLOBALS['TL_LANG']['tl_content']['sectionType'] = ['Section-Typ', 'Wählen Sie, ob die Section als Grid oder Split-Layout ausgegeben wird.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionPreset'] = ['Preset', 'Wählen Sie eine optionale Preset-Klasse für projektspezifisches Styling.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionColumns'] = ['Spalten', 'Anzahl der Grid-Spalten. Wird für den Section-Typ Grid verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionGap'] = ['Abstand', 'Grid-Abstand zwischen den Elementen. Wird für den Section-Typ Grid verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionGridAlign'] = ['Grid-Ausrichtung', 'Ausrichtung der Grid-Elemente. Wird für den Section-Typ Grid verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionRatio'] = ['Split-Verhältnis', 'Breitenverhältnis der Split-Bereiche. Wird für den Section-Typ Split verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionAlign'] = ['Split-Ausrichtung', 'Vertikale Ausrichtung der Split-Bereiche. Wird für den Section-Typ Split verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionDivider'] = ['Trenner anzeigen', 'Fügt die Klasse has-divider hinzu. Wird für den Section-Typ Split verwendet.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionStackMobile'] = ['Mobil stapeln', 'Fügt die Klasse is-stack-mobile hinzu.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionColumns'] = ['Spalten', 'Anzahl der Grid-Spalten.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionGap'] = ['Abstand', 'Abstand zwischen den Grid-Elementen.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionGridAlign'] = ['Grid-Ausrichtung', 'Ausrichtung der Grid-Elemente.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionRatio'] = ['Split-Verhältnis', 'Breitenverhältnis der Split-Bereiche.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionAlign'] = ['Split-Ausrichtung', 'Vertikale Ausrichtung der Split-Bereiche.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionDivider'] = ['Trenner anzeigen', 'Zeigt eine Trennlinie zwischen den Split-Bereichen an.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionStackMobile'] = ['Mobil stapeln', 'Stapelt die Bereiche auf kleineren Bildschirmen untereinander.'];
 
 $GLOBALS['TL_LANG']['tl_content']['sectionTypeOptions'] = [
     'grid' => 'Grid',

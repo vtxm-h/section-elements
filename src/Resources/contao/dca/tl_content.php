@@ -3,8 +3,6 @@
 $GLOBALS['TL_DCA']['tl_content']['palettes']['vtxm_section_start']
     = '{type_legend},type,headline;'
     . '{section_legend},sectionType,sectionPreset,sectionStackMobile;'
-    . '{grid_legend},sectionColumns,sectionGap,sectionGridAlign;'
-    . '{split_legend},sectionRatio,sectionAlign,sectionDivider;'
     . '{protected_legend:hide},protected;'
     . '{expert_legend:hide},guests,cssID,space;'
     . '{invisible_legend:hide},invisible,start,stop';
@@ -21,6 +19,11 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['vtxm_section_end']
     . '{expert_legend:hide},guests;'
     . '{invisible_legend:hide},invisible,start,stop';
 
+$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'sectionType';
+
+$GLOBALS['TL_DCA']['tl_content']['subpalettes']['sectionType_grid'] = 'sectionColumns,sectionGap,sectionGridAlign';
+$GLOBALS['TL_DCA']['tl_content']['subpalettes']['sectionType_split'] = 'sectionRatio,sectionAlign,sectionDivider';
+
 $GLOBALS['TL_DCA']['tl_content']['fields']['sectionType'] = [
     'exclude' => true,
     'default' => 'grid',
@@ -30,6 +33,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['sectionType'] = [
     'eval' => [
         'chosen' => true,
         'tl_class' => 'w50',
+        'submitOnChange' => true,
     ],
     'sql' => "varchar(16) NOT NULL default ''",
 ];
