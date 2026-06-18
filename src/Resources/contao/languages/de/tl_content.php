@@ -22,7 +22,7 @@ $GLOBALS['TL_LANG']['tl_content']['grid_legend'] = 'Grid-Einstellungen';
 $GLOBALS['TL_LANG']['tl_content']['split_legend'] = 'Split-Einstellungen';
 
 $GLOBALS['TL_LANG']['tl_content']['sectionType'] = ['Section-Typ', 'Wählen Sie, ob die Section als Grid oder Split-Layout ausgegeben wird.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionPreset'] = ['Preset', 'Wählen Sie eine optionale Preset-Klasse für projektspezifisches Styling.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionPreset'] = ['Preset', 'Wählen Sie eine optionale Gestaltungsvorgabe für diese Section.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionColumns'] = ['Spalten', 'Anzahl der Grid-Spalten.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionGap'] = ['Abstand', 'Abstand zwischen den Grid-Elementen.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionGridAlign'] = ['Grid-Ausrichtung', 'Ausrichtung der Grid-Elemente.'];

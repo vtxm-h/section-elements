@@ -10,13 +10,19 @@ This Contao bundle provides inline structural Start / Area / End content element
 
 ## Repository-specific role
 
-This repository is responsible for larger reusable section components.
+This repository provides inline structural Start, Area and End elements inside the current Contao article.
 
-Section elements should remain composable and reusable.
+It does not provide external reusable section content. It provides article-local structural wrappers for one-off layouts whose contained content is edited directly inside the same article.
 
 Avoid hardcoded page-specific logic.
 
+It complements, but does not replace, `layout-preset`, `content-grid` or `article-insert`.
+
 Do not duplicate responsibilities of `content-grid`, `article-insert` or `layout-preset`.
+
+This bundle must not become a page builder.
+
+It must not contain unrelated content-element logic.
 
 The section start and end templates intentionally output open and closing structure tags. Do not auto-close the start template or wrap unrelated markup around the end template.
 
@@ -34,7 +40,7 @@ Conceptual repository roles:
 
 - `frontend-assets` provides shared frontend assets, scripts and styles.
 - `content-elements` provides actual Contao content elements.
-- `section-elements` provides larger reusable section components.
+- `section-elements` provides inline structural Start, Area and End elements inside the current Contao article.
 - `content-grid` arranges multiple content elements in a grid.
 - `article-insert` inserts or renders article content in another context.
 - `layout-preset` provides macro layout structures with slots or layout modes.

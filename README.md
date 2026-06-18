@@ -1,16 +1,29 @@
 # Section Elements (Contao)
 
-Inline structural content elements for Contao articles.
+Inline structural Start / Area / End content elements for Contao articles.
 
-This bundle provides Start / Area / End content elements that allow editors to build layout structures directly inside one Contao article.
-
-It is not a replacement for `layout-preset` or `content-grid`. It is an additional inline-structure system for content that is only used once and should not require hidden source articles.
+This bundle provides article-local wrappers that allow editors to build grid or split structures directly inside the current Contao article. It does not provide external reusable section content and should not become a page builder.
 
 - Inline structural wrappers inside the current article
 - Grid and split section types
 - Theme-agnostic output
 - No frontend CSS included by design
 - No JavaScript included by design
+
+
+## Repository Role
+
+Recommended separation in the VTXM modular Contao element system:
+
+- `content-elements` = reusable content blocks
+- `section-elements` = inline Start / Area / End structures inside the current article
+- `content-grid` = render another article as a configurable grid
+- `layout-preset` = macro layout with external article, module or HTML slots
+- `article-insert` = insert a selected article into a module or layout context
+
+Use `section-elements` when the structure belongs to the current article and the contained content is edited directly in that article.
+
+Do not use `section-elements` when the content must be reused in several places. For reusable external content, use `layout-preset`, `content-grid` or `article-insert` depending on the use case.
 
 
 ## Content Elements
@@ -28,53 +41,31 @@ The bundle registers these content elements in the `vtxm` category:
 `vtxm_section_end` closes the current section structure.
 
 
-## Usage
+## Section Options and DCA Behavior
 
-Add the section elements directly inside one Contao article.
+The start element uses `sectionType` as a DCA selector. The field has `submitOnChange` enabled, so changing the section type triggers a backend reload and shows the matching subpalette.
 
-Grid:
+For `sectionType = grid`, the backend shows the `sectionType_grid` subpalette:
 
-```text
-VTXM Section Start
-Iconbox
-Iconbox
-Iconbox
-VTXM Section End
-```
+- `sectionColumns`
+- `sectionGap`
+- `sectionGridAlign`
 
-Split:
+For `sectionType = split`, the backend shows the `sectionType_split` subpalette:
 
-```text
-VTXM Section Start
-Members Grid
-VTXM Section Area
-Text
-Timeline
-VTXM Section End
-```
+- `sectionRatio`
+- `sectionAlign`
+- `sectionDivider`
 
-Always close `VTXM Section Start` with `VTXM Section End`.
+Shared settings remain visible:
 
-Use `VTXM Section Area` only inside split sections.
+- `sectionPreset`
+- `sectionStackMobile`
+- `headline`
+- `cssID`
+- Contao visibility fields such as `protected`, `guests`, `invisible`, `start` and `stop`
 
-Do not cross-nest Grid, Section or Layout structures incorrectly. Wrong nesting can break the frontend layout because these elements intentionally output open and close tags.
-
-
-## Recommended Role
-
-Recommended separation:
-
-- `content-elements` = reusable content blocks
-- `content-grid` = render another article as a grid
-- `layout-preset` = render external slots as split layout
-- `section-elements` = inline structure inside the current article
-
-Use this bundle when a grid or split structure belongs to the current article and the content is not meant to be reused elsewhere.
-
-
-## Section Options
-
-The start element supports:
+Supported option values:
 
 - `sectionType`: `grid`, `split`
 - `sectionPreset`: `default`, `about`, `contact`, `spotlight`
@@ -86,10 +77,78 @@ The start element supports:
 - `sectionDivider`
 - `sectionStackMobile`
 
-CSS ID / class values from the backend are preserved on the root section element.
+CSS ID and class values from the backend are preserved on the root section element.
+
+
+## Structural Rules and Limitations
+
+Every `VTXM Section Start` must be followed by a matching `VTXM Section End`.
+
+`VTXM Section Area` is only valid inside a split section.
+
+A grid section must not contain `VTXM Section Area`.
+
+A split section should normally contain exactly one `VTXM Section Area`.
+
+Invalid ordering or missing closing elements can break frontend markup.
+
+The bundle intentionally does not auto-correct invalid structure.
+
+Editors should keep Start / Area / End elements together in the same article.
+
+Avoid crossing or interleaving unrelated structural wrappers.
+
+Grid example:
+
+```text
+VTXM Section Start
+* Text
+* Iconbox
+* Iconbox
+VTXM Section End
+```
+
+Split example:
+
+```text
+VTXM Section Start
+* Media Text
+VTXM Section Area
+* Timeline
+* Factsbox
+VTXM Section End
+```
+
+
+## Current Stack Behavior
+
+During rendering, `VTXM Section Start` records the current section type in an internal stack.
+
+`VTXM Section Area` checks whether the current section type is `split`.
+
+`VTXM Section End` closes the current section type.
+
+`VTXM Section Area` outputs nothing when used outside a split section.
+
+`VTXM Section End` outputs nothing if no valid section type is active.
+
+This stack is a rendering helper, not full editor-side validation. The bundle does not claim to prevent or repair all malformed nesting.
+
+
+## Debugging Malformed Sections
+
+If frontend markup appears broken:
+
+1. Check that every Section Start has a Section End.
+2. Check that Section Area is used only in split sections.
+3. Check the article element order.
+4. Clear the Contao cache after DCA or template changes.
+5. Inspect the generated HTML structure.
 
 
 ## HTML Hooks
+
+The current templates emit the following class names. Treat them as public hooks unless a migration explicitly changes them.
 
 Root classes:
 
@@ -133,11 +192,14 @@ Inner hooks:
 
 - `.vtxm-section__headline`
 - `.vtxm-section__inner`
-- `.content-grid__inner`
-- `.layout-preset__inner`
 - `.vtxm-section__area`
 - `.vtxm-section__area--a`
 - `.vtxm-section__area--b`
+
+Compatibility hooks currently emitted by the templates:
+
+- `.content-grid__inner`
+- `.layout-preset__inner`
 - `.layout-preset__area`
 - `.layout-preset__area--a`
 - `.layout-preset__area--b`
@@ -160,9 +222,13 @@ Templates:
 
 ## Installation (via Composer / Contao Manager)
 
-Add the package definition to your Contao project `composer.json` or install it via your configured repository setup.
+Install the package through your configured repository setup:
 
-Example package reference:
+```bash
+composer require vtxm-h/section-elements
+```
+
+If the package is installed through an inline Composer package repository, keep the release reference generic and replace `VERSION` with the selected release tag. The tag in the `dist.url` must match the actual release tag.
 
 ```json
 {
@@ -171,12 +237,12 @@ Example package reference:
       "type": "package",
       "package": {
         "name": "vtxm-h/section-elements",
-        "version": "1.0.0",
+        "version": "VERSION",
         "type": "contao-bundle",
         "license": "MIT",
         "description": "Inline structural section content elements for Contao 4.13 articles.",
         "dist": {
-          "url": "https://github.com/vtxm-h/section-elements/archive/refs/tags/v1.0.0.zip",
+          "url": "https://github.com/vtxm-h/section-elements/archive/refs/tags/VERSION.zip",
           "type": "zip"
         },
         "autoload": {
@@ -198,13 +264,7 @@ Example package reference:
 }
 ```
 
-Install:
-
-```bash
-composer require vtxm-h/section-elements
-```
-
-Then update the Contao database so the new `tl_content` fields are created.
+Then update the Contao database so the existing `tl_content` fields are created.
 
 
 ## Compatibility
