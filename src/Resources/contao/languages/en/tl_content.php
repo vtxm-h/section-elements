@@ -22,7 +22,7 @@ $GLOBALS['TL_LANG']['tl_content']['grid_legend'] = 'Grid settings';
 $GLOBALS['TL_LANG']['tl_content']['split_legend'] = 'Split settings';
 
 $GLOBALS['TL_LANG']['tl_content']['sectionType'] = ['Section type', 'Choose whether the section is rendered as a grid or split layout.'];
-$GLOBALS['TL_LANG']['tl_content']['sectionPreset'] = ['Preset', 'Choose an optional preset class for project-specific styling.'];
+$GLOBALS['TL_LANG']['tl_content']['sectionPreset'] = ['Preset', 'Choose an optional styling preset for this section.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionColumns'] = ['Columns', 'Number of grid columns.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionGap'] = ['Gap', 'Spacing between grid elements.'];
 $GLOBALS['TL_LANG']['tl_content']['sectionGridAlign'] = ['Grid alignment', 'Alignment of grid elements.'];
