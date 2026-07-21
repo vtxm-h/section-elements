@@ -1,4 +1,4 @@
-<?php if ($this->isSplit): ?>
+<?php if ($this->shouldRender && $this->isSplit): ?>
     </div>
     <div class="vtxm-section__area vtxm-section__area--b layout-preset__area layout-preset__area--b">
 <?php endif; ?>

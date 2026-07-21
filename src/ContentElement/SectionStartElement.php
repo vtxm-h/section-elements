@@ -4,48 +4,24 @@ declare(strict_types=1);
 
 namespace Vendor\SectionElementsBundle\ContentElement;
 
-use Contao\ContentElement;
-use Contao\StringUtil;
+use Vendor\SectionElementsBundle\Section\SectionFields;
 
-class SectionStartElement extends ContentElement
+class SectionStartElement extends AbstractSectionElement
 {
     protected $strTemplate = 'ce_vtxm_section_start';
 
-    private const SECTION_TYPES = ['grid', 'split'];
-    private const PRESETS = ['default', 'about', 'contact', 'spotlight'];
-    private const COLUMNS = ['2', '3', '4'];
-    private const GAPS = ['small', 'medium', 'large'];
-    private const GRID_ALIGNMENTS = ['start', 'center', 'stretch'];
-    private const RATIOS = ['50-50', '60-40', '40-60', '70-30', '30-70'];
-    private const ALIGNMENTS = ['start', 'center'];
-    private const HEADLINE_UNITS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-
-    /**
-     * @var list<string>
-     */
-    private static array $sectionStack = [];
-
-    public static function getCurrentSectionType(): ?string
-    {
-        if ([] === self::$sectionStack) {
-            return null;
-        }
-
-        return self::$sectionStack[\count(self::$sectionStack) - 1];
-    }
-
-    public static function closeCurrentSectionType(): ?string
-    {
-        return \array_pop(self::$sectionStack);
-    }
-
     protected function compile(): void
     {
-        $sectionType = $this->normalizeOption((string) ($this->sectionType ?: 'grid'), self::SECTION_TYPES, 'grid');
-        $sectionPreset = $this->normalizeOption((string) ($this->sectionPreset ?: 'default'), self::PRESETS, 'default');
-        $stackMobile = $this->normalizeCheckbox((string) $this->sectionStackMobile, true);
+        $context = $this->resolveSectionContext();
+        $this->Template->shouldRender = $context->shouldRender();
 
-        self::$sectionStack[] = $sectionType;
+        if (!$context->shouldRender()) {
+            return;
+        }
+
+        $sectionType = $context->getSectionType();
+        $sectionPreset = $this->option(SectionFields::SECTION_PRESET, SectionFields::PRESETS, SectionFields::DEFAULTS[SectionFields::SECTION_PRESET]);
+        $stackMobile = $this->checkbox(SectionFields::SECTION_STACK_MOBILE, true);
 
         [$elementId, $extraClasses] = $this->getCssIdParts();
 
@@ -57,9 +33,9 @@ class SectionStartElement extends ContentElement
         ];
 
         if ('grid' === $sectionType) {
-            $columns = $this->normalizeOption((string) ($this->sectionColumns ?: '3'), self::COLUMNS, '3');
-            $gap = $this->normalizeOption((string) ($this->sectionGap ?: 'medium'), self::GAPS, 'medium');
-            $gridAlign = $this->normalizeOption((string) ($this->sectionGridAlign ?: 'stretch'), self::GRID_ALIGNMENTS, 'stretch');
+            $columns = $this->option(SectionFields::SECTION_COLUMNS, SectionFields::COLUMNS, SectionFields::DEFAULTS[SectionFields::SECTION_COLUMNS]);
+            $gap = $this->option(SectionFields::SECTION_GAP, SectionFields::GAPS, SectionFields::DEFAULTS[SectionFields::SECTION_GAP]);
+            $gridAlign = $this->option(SectionFields::SECTION_GRID_ALIGN, SectionFields::GRID_ALIGNMENTS, SectionFields::DEFAULTS[SectionFields::SECTION_GRID_ALIGN]);
 
             $classes[] = 'cg--cols-'.$columns;
             $classes[] = 'cg--gap-'.$gap;
@@ -67,13 +43,13 @@ class SectionStartElement extends ContentElement
         }
 
         if ('split' === $sectionType) {
-            $ratio = $this->normalizeOption((string) ($this->sectionRatio ?: '50-50'), self::RATIOS, '50-50');
-            $align = $this->normalizeOption((string) ($this->sectionAlign ?: 'start'), self::ALIGNMENTS, 'start');
+            $ratio = $this->option(SectionFields::SECTION_RATIO, SectionFields::RATIOS, SectionFields::DEFAULTS[SectionFields::SECTION_RATIO]);
+            $align = $this->option(SectionFields::SECTION_ALIGN, SectionFields::ALIGNMENTS, SectionFields::DEFAULTS[SectionFields::SECTION_ALIGN]);
 
             $classes[] = 'ratio--'.$ratio;
             $classes[] = 'align--'.$align;
 
-            if ($this->normalizeCheckbox((string) $this->sectionDivider, false)) {
+            if ($this->checkbox(SectionFields::SECTION_DIVIDER, false)) {
                 $classes[] = 'has-divider';
             }
         }
@@ -86,61 +62,26 @@ class SectionStartElement extends ContentElement
 
         $this->setHeadlineTemplateOptions();
 
-        $this->Template->elementId = StringUtil::specialchars($elementId);
-        $this->Template->elementClass = StringUtil::specialchars(\implode(' ', \array_filter($classes)));
+        $this->Template->elementId = $this->escape($elementId);
+        $this->Template->elementClass = $this->escape(\implode(' ', \array_filter($classes)));
         $this->Template->sectionType = $sectionType;
     }
 
     /**
-     * @return array{0: string, 1: list<string>}
+     * @return list<string>
      */
-    private function getCssIdParts(): array
+    protected function getBackendDetails(): array
     {
-        $cssId = $this->arrData['cssID'] ?? [];
+        $sectionType = SectionFields::sectionType($this->arrData);
 
-        if (!\is_array($cssId)) {
-            $cssId = StringUtil::deserialize($cssId, true);
-        }
-
-        $elementId = \trim((string) ($cssId[0] ?? ''));
-        $classValue = \trim((string) ($cssId[1] ?? ''));
-        $classes = [];
-
-        if ('' !== $classValue) {
-            $classes = \preg_split('/\s+/', $classValue) ?: [];
-        }
-
-        return [$elementId, \array_values(\array_filter($classes))];
+        return [
+            'type: '.$sectionType,
+            'preset: '.$this->option(SectionFields::SECTION_PRESET, SectionFields::PRESETS, SectionFields::DEFAULTS[SectionFields::SECTION_PRESET]),
+        ];
     }
 
-    private function setHeadlineTemplateOptions(): void
+    protected function getBackendWildcardLabel(): string
     {
-        $headline = StringUtil::deserialize($this->headline, true);
-        $headlineText = \trim((string) ($headline['value'] ?? ''));
-        $headlineUnit = (string) ($headline['unit'] ?? 'h2');
-
-        if (!\in_array($headlineUnit, self::HEADLINE_UNITS, true)) {
-            $headlineUnit = 'h2';
-        }
-
-        $this->Template->headlineText = StringUtil::specialchars($headlineText);
-        $this->Template->headlineUnit = $headlineUnit;
-    }
-
-    /**
-     * @param list<string> $allowed
-     */
-    private function normalizeOption(string $value, array $allowed, string $default): string
-    {
-        return \in_array($value, $allowed, true) ? $value : $default;
-    }
-
-    private function normalizeCheckbox(string $value, bool $default): bool
-    {
-        if ('' === $value) {
-            return $default;
-        }
-
-        return '1' === $value;
+        return 'VTXM Section Start';
     }
 }

@@ -8,10 +8,21 @@
         "contao/core-bundle": "^4.13",
         "contao/manager-plugin": "^2.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
     "autoload": {
         "psr-4": {
             "Vendor\\SectionElementsBundle\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vendor\\SectionElementsBundle\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
     },
     "extra": {
         "contao-manager-plugin": "Vendor\\SectionElementsBundle\\ContaoManager\\Plugin"

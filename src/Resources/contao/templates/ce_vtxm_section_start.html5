@@ -1,3 +1,4 @@
+<?php if ($this->shouldRender): ?>
 <section<?php if ($this->elementId): ?> id="<?= $this->elementId ?>"<?php endif; ?> class="<?= $this->elementClass ?>">
 <?php if ($this->headlineText): ?>
   <<?= $this->headlineUnit ?> class="vtxm-section__headline"><?= $this->headlineText ?></<?= $this->headlineUnit ?>>
@@ -7,4 +8,5 @@
     <div class="vtxm-section__area vtxm-section__area--a layout-preset__area layout-preset__area--a">
 <?php else: ?>
   <div class="vtxm-section__inner content-grid__inner">
+<?php endif; ?>
 <?php endif; ?>
