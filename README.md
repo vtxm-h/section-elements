@@ -43,41 +43,43 @@ The bundle registers these content elements in the `vtxm` category:
 
 ## Section Options and DCA Behavior
 
-The start element uses `sectionType` as a DCA selector. The field has `submitOnChange` enabled, so changing the section type triggers a backend reload and shows the matching subpalette.
+The start element uses `vtxmSectionType` as a bundle-specific DCA selector. The field has `submitOnChange` enabled, so changing the section type triggers a backend reload and shows the matching subpalette.
 
-For `sectionType = grid`, the backend shows the `sectionType_grid` subpalette:
+For `vtxmSectionType = grid`, the backend shows the `vtxmSectionType_grid` subpalette:
 
-- `sectionColumns`
-- `sectionGap`
-- `sectionGridAlign`
+- `vtxmSectionColumns`
+- `vtxmSectionGap`
+- `vtxmSectionGridAlign`
 
-For `sectionType = split`, the backend shows the `sectionType_split` subpalette:
+For `vtxmSectionType = split`, the backend shows the `vtxmSectionType_split` subpalette:
 
-- `sectionRatio`
-- `sectionAlign`
-- `sectionDivider`
+- `vtxmSectionRatio`
+- `vtxmSectionAlign`
+- `vtxmSectionDivider`
 
 Shared settings remain visible:
 
-- `sectionPreset`
-- `sectionStackMobile`
+- `vtxmSectionPreset`
+- `vtxmSectionStackMobile`
 - `headline`
 - `cssID`
 - Contao visibility fields such as `protected`, `guests`, `invisible`, `start` and `stop`
 
 Supported option values:
 
-- `sectionType`: `grid`, `split`
-- `sectionPreset`: `default`, `about`, `contact`, `spotlight`
-- `sectionColumns`: `2`, `3`, `4`
-- `sectionGap`: `small`, `medium`, `large`
-- `sectionGridAlign`: `start`, `center`, `stretch`
-- `sectionRatio`: `50-50`, `60-40`, `40-60`, `70-30`, `30-70`
-- `sectionAlign`: `start`, `center`
-- `sectionDivider`
-- `sectionStackMobile`
+- `vtxmSectionType`: `grid`, `split`
+- `vtxmSectionPreset`: `default`, `about`, `contact`, `spotlight`
+- `vtxmSectionColumns`: `2`, `3`, `4`
+- `vtxmSectionGap`: `small`, `medium`, `large`
+- `vtxmSectionGridAlign`: `start`, `center`, `stretch`
+- `vtxmSectionRatio`: `50-50`, `60-40`, `40-60`, `70-30`, `30-70`
+- `vtxmSectionAlign`: `start`, `center`
+- `vtxmSectionDivider`
+- `vtxmSectionStackMobile`
 
 CSS ID and class values from the backend are preserved on the root section element.
+
+The old generic field names `sectionType`, `sectionPreset`, `sectionColumns`, `sectionGap`, `sectionGridAlign`, `sectionRatio`, `sectionAlign`, `sectionDivider` and `sectionStackMobile` are treated as legacy input only while a record does not yet expose the matching `vtxmSection*` value. Once the new field exists in a record row, the new value is authoritative, including empty checkbox values. The legacy fields are not registered by this bundle anymore.
 
 
 ## Structural Rules and Limitations
@@ -90,9 +92,7 @@ A grid section must not contain `VTXM Section Area`.
 
 A split section should normally contain exactly one `VTXM Section Area`.
 
-Invalid ordering or missing closing elements can break frontend markup.
-
-The bundle intentionally does not auto-correct invalid structure.
+Invalid ordering or missing closing elements are treated deterministically. The malformed structural markers become inert instead of emitting unmatched section tags.
 
 Editors should keep Start / Area / End elements together in the same article.
 
@@ -120,19 +120,34 @@ VTXM Section End
 ```
 
 
-## Current Stack Behavior
+## Rendering Behavior
 
-During rendering, `VTXM Section Start` records the current section type in an internal stack.
+The bundle does not keep process-global frontend state. Each structural element resolves its own context from the currently renderable sibling records in the same parent content sequence.
 
-`VTXM Section Area` checks whether the current section type is `split`.
+The resolver uses the same parent ordering as Contao article rendering and filters structural siblings that are not renderable because of `invisible`, `start`, `stop`, unsaved state, protected access or guest-only access.
 
-`VTXM Section End` closes the current section type.
+`VTXM Section Start` outputs opening markup only if a matching renderable `VTXM Section End` exists later in the same sequence.
 
-`VTXM Section Area` outputs nothing when used outside a split section.
+`VTXM Section Area` outputs the area switch only inside a matched split section and only for the first area switch of that split section.
 
-`VTXM Section End` outputs nothing if no valid section type is active.
+`VTXM Section End` outputs closing markup only if it closes a matched renderable start marker.
 
-This stack is a rendering helper, not full editor-side validation. The bundle does not claim to prevent or repair all malformed nesting.
+Nested starts are considered malformed. The nested start marker is inert and does not open another section.
+
+In backend rendering, all three elements return wildcard previews and do not resolve or mutate frontend structural state.
+
+
+## Legacy Data Migration
+
+The bundle registers a Contao migration service for Contao 4.13.
+
+The migration copies legacy generic field values to the new bundle-specific fields only on `vtxm_section_start` records whose `vtxmSection*` fields are still uninitialized. It does not alter unrelated content elements and does not overwrite or refill already initialized new-schema records.
+
+If legacy columns are present but the new columns have not been created yet, the migration creates the missing `vtxmSection*` columns before copying values. This protects legacy data during Contao's pre-schema migration pass, including `contao:migrate --with-deletes`, where old columns could otherwise be removed by the following schema diff before the post-schema migration pass runs.
+
+After copying legacy values for an uninitialized legacy start record, still-empty new start fields receive the same defaults used for new records, including `vtxmSectionStackMobile = 1`. Later edits to new fields remain authoritative, including empty checkbox values, even if the old legacy columns are still present.
+
+The migration is idempotent and can be run repeatedly through the Contao install tool database update or `contao:migrate`.
 
 
 ## Debugging Malformed Sections
@@ -264,7 +279,7 @@ If the package is installed through an inline Composer package repository, keep 
 }
 ```
 
-Then update the Contao database so the existing `tl_content` fields are created.
+Then update the Contao database so the new `tl_content` fields are created and the legacy field migration can run.
 
 
 ## Compatibility
